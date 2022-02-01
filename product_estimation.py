@@ -250,7 +250,7 @@ def image_estimates(data, args, sensor='', product_name='chl', rhos=False, anc=F
 	est_mask = np.tile(im_mask[:,None], (1, product.shape[1]))
 	est_data = np.ma.array(np.zeros(est_mask.shape)*np.nan, mask=est_mask, hard_mask=True)
 	est_data.data[~im_mask] = product
-	return [p.reshape(im_shape) for p in est_data.T]
+	return [p.reshape(im_shape) for p in est_data.T], idx
 
 def apply_model(x_test, use_cmdline=True, **kwargs):
 	''' Apply a model (defined by kwargs and default parameters) to x_test '''
