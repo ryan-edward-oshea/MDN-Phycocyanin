@@ -2,17 +2,18 @@
 PC retrieval MDN for HICO and PRISMA
 
 Setup:
-1. conda create --name example_PC_environment python=3.7
-2. conda activate example_PC_environment
-3. pip install -r requirements.txt 
-4. copy below code into main.py, 1 directory above current directory
-5. python main.py
+1. Download: git clone https://github.com/STREAM-RS/MDN-Phycocyanin.git MDNPC
+2. conda create --name example_PC_environment python=3.7
+3. conda activate example_PC_environment
+4. pip install -r requirements.txt 
+5. copy below code into main.py, 1 directory above current directory
+6. python main.py
 
 
 #################################### Main.py ####################################################
-from MDN import image_estimates, get_tile_data
-from MDN.parameters import get_args
-from MDN.utils import get_sensor_bands, set_kwargs_PC
+from MDNPC import image_estimates, get_tile_data
+from MDNPC.parameters import get_args
+from MDNPC.utils import get_sensor_bands, set_kwargs_PC
 import matplotlib.pyplot as plt
 import numpy as np
 

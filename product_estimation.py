@@ -41,14 +41,14 @@ def get_estimates(args, x_train=None, y_train=None, x_test=None, y_test=None, ou
 		args.x_scalers = [
 			store_scaler(BaggingColumnTransformer, [len(wavelengths)], {'n_extra':n_extra}),
 		] + args.x_scalers
-	
-	print(args)
+	verbose_arg = 0
+	if verbose_arg: print(args)
 
 	# if args.add_ratios: 
 	if using_feature(args, 'ratio'):
-		print('USING RATIO')
+		if verbose_arg: print('USING RATIO')
 		if using_feature(args, 'only_ratio'):
-			print('OVERWRITING INPUTS get_estimates, using only ratio')
+			if verbose_arg: print('OVERWRITING INPUTS get_estimates, using only ratio')
 		args.x_scalers = [
 			store_scaler(RatioTransformer, [list(wavelengths),using_feature(args, 'only_ratio'),args.band_ratios_thresholded,args.line_heights_thresholded,args.only_append_LH]),
 		] + args.x_scalers
