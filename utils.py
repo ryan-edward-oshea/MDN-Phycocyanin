@@ -1005,3 +1005,124 @@ def assign_spectra_OWT_angle_nearest_Rrs(z_data,z_w_data):
 		nearest_member_Rrs.append(nearest_member)
 		member_w_list.append(member_w)
 	return OWT_assignments, min_OWT_angle, nearest_member_Rrs,member_w_list
+
+def load_geotiff_bands(sensor,path_to_tile="projected_calimnos.tif",wvl_key="",allow_neg=False,atmospheric_correction="",OVERRIDE_DIVISOR=None):
+    #from osgeo import gdal
+    #import rasterio
+    #from rasterio.plot import show
+	#if '.tif' in path_to_tile:
+    if wvl_key not in ["_Rw","Rrs_","Oax"]:
+        if '_calimnos' in path_to_tile or atmospheric_correction=="POLYMER":
+            wvl_key = "_Rw"
+            div   = np.pi 
+        if '_acolite' in path_to_tile or atmospheric_correction=="ACOLITE":
+            wvl_key = "Rrs_"
+            div   = 1
+        if '_processed_reprojected' in path_to_tile or atmospheric_correction=="iCOR":
+            wvl_key = "Oax"
+            div   = np.pi 
+    if OVERRIDE_DIVISOR:
+        div = OVERRIDE_DIVISOR
+        #print("Will be dividing by", div)
+    print("Wvl_key is set to:",wvl_key)
+    if div != 1: 
+        print("Converting to Rrs by dividing by:", div)
+    else:
+        print("Image already in Rrs, dividing by",div)
+    import tifffile
+    from tifffile import TiffFile
+    #array = TiffFile.imread(path_to_tile)
+    #array = img.read()
+
+    array = []
+    for page in TiffFile(path_to_tile).pages:
+        image = page.asarray()
+        array.append(image)
+        for tag in page.tags.values():
+            if tag.name =="65000":
+                tag_value = tag.value
+                #print("tag.name", "tag.code", "tag.dtype", "tag.count", "tag.value")
+                #print(tag.name, tag.code, tag.dtype, tag.count, tag.value)
+    #print("tag_value")
+
+#    print(tag_value)
+    #print("----Array shape",np.shape(array))
+    array = np.squeeze(np.asarray(array))
+    #print("----Array shape",np.shape(array))
+
+    #Write xml document        
+    text_file = open("available_geotiff_info.xml", "w")
+    n = text_file.write(tag_value)
+    text_file.close()
+    
+    from xml.etree import ElementTree as ET
+    
+    xml = ET.parse("available_geotiff_info.xml")
+    root_element = xml.getroot()
+    
+    #products
+    available_band_names=[]
+    wavelengths=[]
+    band_imagery=[]
+   
+    for i,child_el in enumerate(root_element):
+        #print(i,child_el.items(),child_el.keys(),child_el.tag)
+        if child_el.tag == 'Image_Interpretation':
+            Image_Interpretation_integer = i
+    #print(root_element[dataset_sources_integer])
+    dict_of_Oa_bands = {'Oa1':400.0,
+                    'Oa2':412.5,
+                    'Oa3':442.5,
+                    'Oa4':490.0,
+                    'Oa5':510.0,
+                    'Oa6':560.0,
+                    'Oa7':620.0,
+                    'Oa8':665.0,
+                    'Oa9':673.75,
+                    'Oa10':681.25,
+                    'Oa11':708.75,
+                    'Oa12':753.75,
+                    'Oa13':761.25,
+                    'Oa14':764.375,
+                    'Oa15':767.5,
+                    'Oa16':778.75,
+                    'Oa17':865.0,
+                    'Oa18':885.0,
+                    'Oa19':900.0,
+                    'Oa20':940.0,
+                    'Oa21':1020.0}
+    for i,child_el in enumerate(root_element[Image_Interpretation_integer]):
+        #print(i,child_el.items(),child_el.keys(),child_el.tag)  
+        for i_2, child_el_2 in enumerate(root_element[Image_Interpretation_integer][i]):
+            #print(i_2,child_el_2.tag,root_element[Image_Interpretation_integer][i][i_2].text)
+            child_tag = child_el.tag
+            if child_el_2.tag == "BAND_INDEX":
+                band_index = int(root_element[Image_Interpretation_integer][i][i_2].text)
+            if child_el_2.tag == 'BAND_NAME':
+                current_band_name = root_element[Image_Interpretation_integer][i][i_2].text
+                available_band_names.append(current_band_name)
+                #print("CURRENT BAND NAME",current_band_name)
+                if current_band_name in dict_of_Oa_bands.keys() and wvl_key=="Oax":
+                     wavelengths.append(dict_of_Oa_bands[current_band_name])
+                     band_imagery.append(array[band_index,:,:])
+                else:
+                    if wvl_key in current_band_name:
+                        wavelengths.append(current_band_name.split(wvl_key)[1])
+                        band_imagery.append(array[band_index,:,:])
+                
+    wavelengths_descending, bands_descending = (list(t) for t in zip(*sorted(zip([np.int64(wavelength) for wavelength in wavelengths], band_imagery),reverse=False)))
+    sensor_bands_required = get_sensor_bands(sensor)
+    indices_of_required_wavelengths = []
+    
+    #find closest index
+    for sensor_band_required in sensor_bands_required:
+        index_of_required_wavelength = find_wavelength(sensor_band_required,wavelengths_descending)
+        indices_of_required_wavelengths.append(index_of_required_wavelength)
+    #div   = np.pi if 'Rw' in wvl_key or 'Oa' in wvl_key else 1
+    bands_descending_required = [band_descending/div for i,band_descending in enumerate(bands_descending) if i in indices_of_required_wavelengths]   
+    bands_descending_required  = np.ma.stack(bands_descending_required,axis=-1)
+    #print("Divided input image by: ", div)
+
+    if not allow_neg: bands_descending_required[bands_descending_required <= 0] = np.nan
+
+    return sensor_bands_required,bands_descending_required.filled(fill_value=np.nan)
