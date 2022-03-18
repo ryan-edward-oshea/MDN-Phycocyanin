@@ -38,8 +38,8 @@ bands, Rrs = get_tile_data(file_name[sensor], sensor, allow_neg=False)
 ##loads from csv, assuming Rrs_wvl.csv and Rrs.csv are in wavelength ascending order, adds input dimension.
 #import pandas as pd
 #Rrs_csv = pd.read_csv('Rrs.csv')
-#Rrs_csv = np.expand_dims(np.asarray(Rrs_csv),0)
-#wavelengths  = pd.read_csv('Rrs_wvl.csv')
+#Rrs_csv = np.expand_dims(np.asarray(Rrs_csv),0) #Columns are wavelengths, we add a dimension, to make he input csv into an 'image' format, for image_estimates below.
+#wavelengths  = pd.read_csv('Rrs_wvl.csv',headers=None) #1st column contains wavelengths
 
 
 # Rrs = np.dstack([np.random.rand(3,3) for band in get_sensor_bands(sensor)])
