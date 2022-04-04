@@ -52,7 +52,9 @@ PC = output[idx['PC']][0]
 print(PC)
 print(np.shape(PC))
 
-plt.imshow(np.flipud(np.transpose(PC)), vmin=0, vmax=100, cmap='jet')
+
+plt.imshow(np.flipud(np.transpose(PC)), norm=LogNorm(vmin=1, vmax=1000), cmap='jet')
+plt.colorbar()
 plt.show()
 
 
