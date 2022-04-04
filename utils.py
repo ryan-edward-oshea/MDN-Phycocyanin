@@ -1021,6 +1021,12 @@ def load_geotiff_bands(sensor,path_to_tile="projected_calimnos.tif",wvl_key="",a
         if '_processed_reprojected' in path_to_tile or atmospheric_correction=="iCOR":
             wvl_key = "Oax"
             div   = np.pi 
+        if atmospheric_correction =='asi':
+            div   = 1
+            print(f'Using {atmospheric_correction} atmospherically corrected image')
+            print('Assuming the bands match the desired sensor bands, are correctly ordered from lowest to highest, and that the AC output is in Rrs')
+            input('Press enter to confirm that this is true')
+            
     if OVERRIDE_DIVISOR:
         div = OVERRIDE_DIVISOR
         #print("Will be dividing by", div)
@@ -1037,6 +1043,8 @@ def load_geotiff_bands(sensor,path_to_tile="projected_calimnos.tif",wvl_key="",a
     array = []
     for page in TiffFile(path_to_tile).pages:
         image = page.asarray()
+        if atmospheric_correction == 'asi':
+                return get_sensor_bands(sensor), np.ma.array(image).filled(fill_value=np.nan)/div
         array.append(image)
         for tag in page.tags.values():
             if tag.name =="65000":
