@@ -18,7 +18,7 @@ from MDNPC.utils import get_sensor_bands, set_kwargs_PC, load_geotiff_bands
 import matplotlib.pyplot as plt
 import numpy as np
 
-sensor = "HICO-noBnoNIR" #PRISMA-noBnoNIR
+sensor = "PRISMA-noBnoNIR" #PRISMA-noBnoNIR
 args = get_args(set_kwargs_PC(sensor))
 
 # Tile should be the output of an atmospheric correction program e.g. SeaDAS
@@ -28,11 +28,11 @@ file_name = {
 }
 
 #loads from netcdf (e.g., l2gen)
-bands, Rrs = get_tile_data(file_name[sensor], sensor, allow_neg=False)
+#bands, Rrs = get_tile_data(file_name[sensor], sensor, allow_neg=False)
 
 ##loads from geotiff:
 #wavelengths, Rrs = load_geotiff_bands(sensor='HICO-noBnoNIR',path_to_tile="ACOLITE.tif",allow_neg=False,atmospheric_correction="ACOLITE")
-#wavelengths, Rrs = load_geotiff_bands(sensor='PRISMA-noBnoNIR',path_to_tile="asi_mdn_bands.tif",allow_neg=False,atmospheric_correction="asi")
+wavelengths, Rrs = load_geotiff_bands(sensor='PRISMA-noBnoNIR',path_to_tile="asi_mdn_bands.tif",allow_neg=False,atmospheric_correction="asi")
 #Atmospheric_correction algorithms can be: "ACOLITE", "POLYMER", or "iCOR"
 #Automatically corrects from rhow to Rrs by dividing by pi for POLYMER or iCOR imagery, assumes accolite imagery is Rrs, assumes asi is in correct order, with correct wavelengths, in Rrs
 #Rw to Rrs Divisor can be overwritten with OVERRIDE_DIVISOR argument
