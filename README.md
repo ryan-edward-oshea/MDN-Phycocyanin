@@ -13,7 +13,7 @@ Setup:
 #################################### Main.py ####################################################
 from MDNPC import image_estimates, get_tile_data
 from MDNPC.parameters import get_args
-from MDNPC.utils import get_sensor_bands, set_kwargs_PC
+from MDNPC.utils import get_sensor_bands, set_kwargs_PC, load_geotiff_bands
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -31,8 +31,9 @@ bands, Rrs = get_tile_data(file_name[sensor], sensor, allow_neg=False)
 
 ##loads from geotiff:
 #wavelengths, Rrs = load_geotiff_bands(sensor='HICO-noBnoNIR',path_to_tile="ACOLITE.tif",allow_neg=False,atmospheric_correction="ACOLITE")
+#wavelengths, Rrs = load_geotiff_bands(sensor='PRISMA-noBnoNIR',path_to_tile="asi_mdn_bands.tif",allow_neg=False,atmospheric_correction="asi")
 #Atmospheric_correction algorithms can be: "ACOLITE", "POLYMER", or "iCOR"
-#Automatically corrects from rhow to Rrs by dividing by pi for POLYMER or iCOR imagery, assumes accolite imagery is Rrs
+#Automatically corrects from rhow to Rrs by dividing by pi for POLYMER or iCOR imagery, assumes accolite imagery is Rrs, assumes asi is in correct order, with correct wavelengths, in Rrs
 #Rw to Rrs Divisor can be overwritten with OVERRIDE_DIVISOR argument
 
 ##loads from csv, assuming Rrs_wvl.csv and Rrs.csv are in wavelength ascending order, adds input dimension.
