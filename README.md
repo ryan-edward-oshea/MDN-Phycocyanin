@@ -5,9 +5,10 @@ Setup:
 1. Download: git clone https://github.com/STREAM-RS/MDN-Phycocyanin.git MDNPC
 2. conda create --name example_PC_environment python=3.7
 3. conda activate example_PC_environment
-4. pip install -r requirements.txt 
-5. copy below code into main.py, 1 directory above current directory
-6. python main.py
+4. cd MDNPC
+5. pip install -r requirements.txt 
+6. copy below code into main.py, 1 directory above current directory
+7. python main.py
 
 
 #################################### Main.py ####################################################
