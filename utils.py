@@ -1022,8 +1022,8 @@ def load_geotiff_bands(sensor,path_to_tile="projected_calimnos.tif",wvl_key="",a
             wvl_key = "Oax"
             div   = np.pi 
         if atmospheric_correction =='asi':
-            div   = 1
-            print(f'Using {atmospheric_correction} atmospherically corrected image')
+            div   = np.pi
+            print(f'Using {atmospheric_correction} atmospherically corrected image and dividing by {div} (unless overwritten by OVERRIDE_DIVISOR)')
             print('Assuming the bands match the desired sensor bands, are correctly ordered from lowest to highest, and that the AC output is in Rrs')
             input('Press enter to confirm that this is true')
             
