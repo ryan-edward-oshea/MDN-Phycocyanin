@@ -19,6 +19,8 @@ SENSOR_LABEL = { # http://www.ioccg.org/sensors/seawifs.html
 	'MSI'    : 'Sentinel-2',
 	'S2A'    : 'Sentinel-2A',
 	'S2B'    : 'Sentinel-2B',
+	'S3A'    : 'Sentinel-3A',
+	'S3B'    : 'Sentinel-3B',
 	'OLCI'   : 'Sentinel-3',
 	'MERIS'  : 'Envisat-1',
 	'HICO'   : 'HICO',
@@ -70,6 +72,8 @@ SENSOR_BANDS = {
 	'MSI'      : [     443,      490,      560,                     665,      705, 740,                783],
 	'MSI-rho'  : [     443,      490,      560,                     665,      705, 740,                783, 865],
 	'OLCI'     : [411, 442,      490, 510, 560,      619,      664, 673, 681, 708, 753, 761, 764, 767, 778],
+	'OLCI-no760'     : [411, 442,      490, 510, 560,      619,      664, 673, 681, 708, 753,  778],
+
 	'OLCI-noB'     : [510, 560,      619,      664, 673, 681, 708, 753, 761, 764, 767, 778],
 	'OLCI-noBG'     : [560,      619,      664, 673, 681, 708, 753, 761, 764, 767, 778],
 	'OLCI-noNIR'     : [411, 442,      490, 510, 560,      619,      664, 673, 681, 708],
@@ -156,6 +160,7 @@ SENSOR_BANDS = {
 duplicates = {
 	'MOD' : ['MODA', 'MODT'],
 	'MSI' : ['S2A', 'S2B'],
+	'OLCI' : ['S3A', 'S3B'],
 }
 
 # Add duplicate sensors
