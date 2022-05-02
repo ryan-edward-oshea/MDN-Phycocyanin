@@ -1142,3 +1142,19 @@ def load_geotiff_bands(sensor,path_to_tile="projected_calimnos.tif",wvl_key="",a
     if not allow_neg: bands_descending_required[bands_descending_required <= 0] = np.nan
 
     return sensor_bands_required,bands_descending_required.filled(fill_value=np.nan)
+
+def save_geotiff(input_filename,output_filename,data):
+	import rasterio
+	input_image = rasterio.open(input_filename)
+	output_image = rasterio.open(output_filename,'w',
+                        driver='Gtiff',
+                        height = input_image.height,
+                        width = input_image.width, 
+                        count = 1,
+                        crs = input_image.crs,
+                        transform = input_image.transform,
+			dtype = input_image.dtypes[0],)
+
+	output_image.write(data, 1)
+	input_image.close()
+	output_image.close()

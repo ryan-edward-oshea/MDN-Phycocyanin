@@ -36,3 +36,4 @@ wrapt==1.12.1
 scikit-optimize==0.9.0
 netCDF4==1.5.8
 tifffile==2021.11.2
+rasterio==1.2.10
